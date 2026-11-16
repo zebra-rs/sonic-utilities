@@ -109,6 +109,13 @@ def get_routing_stack():
 # Global Routing-Stack variable
 routing_stack = get_routing_stack()
 
+# Routing stacks whose bgp container answers FRR's vtysh commands, and so
+# get the FRR flavour of the BGP commands below. "zebra" is what
+# get_routing_stack() reads from the image name docker-fpm-zebra-rs; that
+# container's vtysh takes FRR's command lines and answers the json forms
+# in FRR's schema.
+FRR_COMPATIBLE_ROUTING_STACKS = ("frr", "zebra")
+
 # Read given JSON file
 def readJsonFile(fileName):
     try:
@@ -1583,7 +1590,7 @@ if routing_stack == "quagga":
     ip.add_command(bgp)
     from .bgp_quagga_v6 import bgp
     ipv6.add_command(bgp)
-elif routing_stack == "frr":
+elif routing_stack in FRR_COMPATIBLE_ROUTING_STACKS:
     from .bgp_frr_v4 import bgp
     ip.add_command(bgp)
     from .bgp_frr_v6 import bgp
